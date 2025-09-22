@@ -31,6 +31,12 @@ public class EmprestimoService {
 
     public EmprestimoResponseDTO calcular(EmprestimoRequestDTO request) {
         Produto produto = produtoService.findProdutoById(request.getIdProduto());
+        if (request.getValorSolicitado() == null || request.getValorSolicitado().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RegraDeNegocioException("O valor solicitado deve ser um número positivo maior que zero.");
+        }
+        if (request.getPrazoMeses() <= 0) {
+            throw new RegraDeNegocioException("O prazo em meses deve ser um número positivo maior que zero.");
+        }
 
         if (request.getPrazoMeses() > produto.getPrazoMaximoMeses()) {
             throw new RegraDeNegocioException("O prazo solicitado (" + request.getPrazoMeses() +
@@ -63,6 +69,10 @@ public class EmprestimoService {
     }
 
     private BigDecimal calcularParcelaPrice(BigDecimal pv, BigDecimal i, int n) {
+        if (i.compareTo(BigDecimal.ZERO) == 0) {
+            return pv.divide(BigDecimal.valueOf(n), SCALE_MONETARIO, RoundingMode.HALF_UP);
+        }
+
         BigDecimal umMaisI = BigDecimal.ONE.add(i);
         BigDecimal umMaisIelevadoN = umMaisI.pow(n, MC);
         BigDecimal pmt = pv.multiply(i.multiply(umMaisIelevadoN)).divide(umMaisIelevadoN.subtract(BigDecimal.ONE), MC);

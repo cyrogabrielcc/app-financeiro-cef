@@ -7,7 +7,6 @@ import com.cef.servicofinanceiro.model.Produto;
 import com.cef.servicofinanceiro.exception.RegraDeNegocioException;
 import com.cef.servicofinanceiro.service.EmprestimoService;
 import com.cef.servicofinanceiro.service.ProdutoService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -97,5 +96,69 @@ class EmprestimoServiceTest {
         });
 
         assertTrue(exception.getMessage().contains("excede o máximo de 36 meses"));
+    }
+
+    @Test
+    @DisplayName("Deve calcular empréstimo com taxa zero")
+    void deveCalcularEmprestimoComTaxaZero() {
+        Produto mockProduto = new Produto(2L, "Crédito Zero", BigDecimal.ZERO, 24);
+        when(produtoService.findProdutoById(2L)).thenReturn(mockProduto);
+
+        EmprestimoRequestDTO request = new EmprestimoRequestDTO();
+        request.setIdProduto(2L);
+        request.setValorSolicitado(new BigDecimal("12000.00"));
+        request.setPrazoMeses(12);
+
+        EmprestimoResponseDTO response = emprestimoService.calcular(request);
+
+        assertEquals(new BigDecimal("1000.00"), response.getParcelaMensal());
+        assertEquals(new BigDecimal("12000.00"), response.getValorTotalComJuros());
+        assertEquals(BigDecimal.ZERO.setScale(6), response.getTaxaJurosEfetivaMensal());
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção para valor solicitado negativo")
+    void deveLancarExcecaoParaValorNegativo() {
+        Produto mockProduto = new Produto(3L, "Crédito Negativo", new BigDecimal("10.00"), 12);
+        when(produtoService.findProdutoById(3L)).thenReturn(mockProduto);
+
+        EmprestimoRequestDTO request = new EmprestimoRequestDTO();
+        request.setIdProduto(3L);
+        request.setValorSolicitado(new BigDecimal("-5000.00"));
+        request.setPrazoMeses(6);
+
+        assertThrows(RegraDeNegocioException.class, () -> emprestimoService.calcular(request));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção para prazo zero")
+    void deveLancarExcecaoParaPrazoZero() {
+        Produto mockProduto = new Produto(4L, "Crédito Prazo Zero", new BigDecimal("10.00"), 12);
+        when(produtoService.findProdutoById(4L)).thenReturn(mockProduto);
+
+        EmprestimoRequestDTO request = new EmprestimoRequestDTO();
+        request.setIdProduto(4L);
+        request.setValorSolicitado(new BigDecimal("5000.00"));
+        request.setPrazoMeses(0);
+
+        assertThrows(RegraDeNegocioException.class, () -> emprestimoService.calcular(request));
+    }
+
+    @Test
+    @DisplayName("Deve calcular empréstimo para prazo mínimo (1 mês)")
+    void deveCalcularEmprestimoPrazoMinimo() {
+        Produto mockProduto = new Produto(5L, "Crédito Rápido", new BigDecimal("12.00"), 12);
+        when(produtoService.findProdutoById(5L)).thenReturn(mockProduto);
+
+        EmprestimoRequestDTO request = new EmprestimoRequestDTO();
+        request.setIdProduto(5L);
+        request.setValorSolicitado(new BigDecimal("1000.00"));
+        request.setPrazoMeses(1);
+
+        EmprestimoResponseDTO response = emprestimoService.calcular(request);
+
+        assertNotNull(response);
+        assertTrue(response.getParcelaMensal().compareTo(BigDecimal.ZERO) > 0);
+        assertEquals(1, response.getMemoriaCalculo().size());
     }
 }

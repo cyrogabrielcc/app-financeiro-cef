@@ -1,6 +1,6 @@
 package com.cef.servicofinanceiro.Resources;
 
-import com.cef.servicofinanceiro.controller.EmprestimoResource;
+import com.cef.servicofinanceiro.resources.EmprestimoResource;
 import com.cef.servicofinanceiro.dto.EmprestimoRequestDTO;
 import com.cef.servicofinanceiro.dto.EmprestimoResponseDTO;
 import com.cef.servicofinanceiro.service.EmprestimoService;
@@ -8,7 +8,6 @@ import com.cef.servicofinanceiro.exception.RegraDeNegocioException;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package com.cef.servicofinanceiro.controller;
+package com.cef.servicofinanceiro.resources;
 
 import com.cef.servicofinanceiro.dto.EmprestimoRequestDTO;
 import com.cef.servicofinanceiro.dto.EmprestimoResponseDTO;

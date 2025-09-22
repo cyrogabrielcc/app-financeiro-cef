@@ -1,4 +1,4 @@
-package com.cef.servicofinanceiro.controller;
+package com.cef.servicofinanceiro.resources;
 
 import com.cef.servicofinanceiro.dto.ProdutoRequestDTO;
 import com.cef.servicofinanceiro.dto.ProdutoResponseDTO;
@@ -19,7 +19,6 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import java.net.URI;
 import java.util.List;
 
 @Path("/produtos")

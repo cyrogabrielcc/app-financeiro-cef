@@ -1,6 +1,6 @@
 package com.cef.servicofinanceiro.Resources;
 
-import com.cef.servicofinanceiro.controller.ProdutoResource;
+import com.cef.servicofinanceiro.resources.ProdutoResource;
 import com.cef.servicofinanceiro.dto.ProdutoRequestDTO;
 import com.cef.servicofinanceiro.dto.ProdutoResponseDTO;
 import com.cef.servicofinanceiro.service.ProdutoService;

@@ -1,0 +1,2 @@
+INSERT INTO ProdutoEmprestimo(id, nome, taxaJurosAnual, prazoMaximoMeses) VALUES (1, 'Crédito Pessoal', 19.9, 36);
+INSERT INTO ProdutoEmprestimo(id, nome, taxaJurosAnual, prazoMaximoMeses) VALUES (2, 'Crédito Consignado', 12.5, 72);
